@@ -1,0 +1,22 @@
+name: cpu-baselines
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  baselines:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - name: Install
+        run: pip install -q datasets scikit-learn pytest
+      - name: Unit tests
+        run: pytest -q tests
+      - name: Baselines on real CaseHOLD
+        run: python experiments/cpu_baselines.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: cpu-baselines, path: results_cpu/}
