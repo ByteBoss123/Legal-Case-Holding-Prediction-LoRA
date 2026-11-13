@@ -1,1 +1,1 @@
-n=3600 truncated=0 pct=0.00% median_cut=0 max_cut=0 median_len=255.0
+max_len=256 n=3600 truncated=1718 pct=47.7% median_cut=21.0 only_first_impossible=0 median_len=255.0
