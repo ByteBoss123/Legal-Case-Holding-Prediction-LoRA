@@ -83,7 +83,7 @@ BERT, N_TRAIN, MAXLEN = "nlpaueb/legal-bert-base-uncased", 20000, 256
 btok = AutoTokenizer.from_pretrained(BERT)
 def enc(batch):
     ctx = [c for c, es, _ in batch for _ in es]; ends = [e for _, es, _ in batch for e in es]
-    e = btok(ctx, ends, truncation="only_first", max_length=MAXLEN, padding=True, return_tensors="pt")
+    e = btok(ctx, ends, truncation="longest_first", max_length=MAXLEN, padding=True, return_tensors="pt")
     return {k: v.view(len(batch), 5, -1).cuda() for k, v in e.items()}
 def bert_pred(model, data, bs=32):
     model.eval(); out = []

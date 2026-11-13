@@ -20,6 +20,7 @@ train 45,000 / validation 3,900 / test 3,600.
 
 ## Evaluation (fixed before any result)
 - Full official test set for every system; accuracy and macro-F1 over answer positions.
+- Legal-BERT inputs are (context, holding) pairs truncated longest-first to 256 tokens.
 - Letter-position bias: share of predictions per letter vs the gold distribution.
 - Paired example-level bootstrap (2,000 resamples) 95% CIs on accuracy differences.
 - **Tort / personal-injury subset:** test examples whose context matches a fixed keyword list
