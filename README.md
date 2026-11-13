@@ -36,7 +36,20 @@ Kaggle -> Import `legal_holding_lora.ipynb` -> Settings: GPU T4 x2, Internet on 
 Outputs land in `results/` (`metrics.json`, `summary.csv`, `test_predictions.json`, LoRA adapter).
 Repo: https://github.com/ByteBoss123/Legal-Case-Holding-Prediction-LoRA
 
-Local tests (logic only, hand-written examples): `pytest tests`.
+Local tests (logic only, hand-written examples): `pytest tests`. CPU baselines: `python experiments/cpu_baselines.py` (also runs in CI).
 
 ## Results
-Pending the Kaggle run.
+### Verified in CI (GitHub Actions run 43365756717, Nov 13 2026; `experiments/cpu_baselines.py`)
+Data: `coastalcph/lex_glue` case_hold, official splits 45,000 / 3,900 / 3,600; gold answers spread evenly
+(19.8-20.2% per letter). Tort / personal-injury keyword subset: 201 of 3,600 test questions.
+
+| System | Test accuracy [95% CI] | Macro-F1 | Tort subset accuracy [95% CI] |
+|---|---|---|---|
+| random | 19.9% [18.6, 21.3] | 0.199 | 20.9% [15.4, 26.4] |
+| tfidf_similarity | **55.1%** [53.4, 56.7] | 0.551 | **59.7%** [53.2, 66.7] |
+
+TF-IDF minus random (paired bootstrap): +35.2 points [33.1, 37.3]; tort subset +38.8 [30.3, 47.3].
+TF-IDF shows no answer-position bias (19.1-20.7% of predictions per letter).
+
+### Legal-BERT and Qwen2.5 (prompting vs LoRA)
+Pending the Kaggle GPU run (`legal_holding_lora.ipynb`).
