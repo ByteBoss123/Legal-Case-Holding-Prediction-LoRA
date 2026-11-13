@@ -52,5 +52,22 @@ Data: `coastalcph/lex_glue` case_hold, official splits 45,000 / 3,900 / 3,600; g
 TF-IDF minus random (paired bootstrap): +35.2 points [33.1, 37.3]; tort subset +38.8 [30.3, 47.3].
 TF-IDF shows no answer-position bias (19.1-20.7% of predictions per letter).
 
-### Legal-BERT and Qwen2.5 (prompting vs LoRA)
-Pending the Kaggle GPU run (`legal_holding_lora.ipynb`).
+### Full comparison (Kaggle T4, Nov 13 2026; `legal_holding_lora.ipynb`, run time 2.0 h)
+Full official test set (3,600 questions); tort / personal-injury subset 201 questions.
+
+| System | Training examples | Test accuracy | Macro-F1 | Tort subset accuracy |
+|---|---|---|---|---|
+| random | - | 19.9% | 0.199 | 20.9% |
+| tfidf_similarity | - (unsupervised) | 55.1% | 0.551 | 59.7% |
+| qwen1.5b_zeroshot | 0 | 58.1% | 0.581 | 64.7% |
+| legal_bert (best epoch 1 of 2; val 76.9%) | 20,000 | 76.3% | 0.763 | 80.6% |
+| **qwen1.5b_lora** (1 epoch) | **5,000** | **77.4%** | 0.774 | **83.6%** |
+
+Paired bootstrap (2,000 resamples), accuracy difference [95% CI]:
+- LoRA minus zero-shot: **+19.3** [17.5, 21.1]; tort subset +18.9 [11.9, 25.9]
+- LoRA minus Legal-BERT: +1.2 [-0.2, 2.5], **a statistical tie**, reached with a quarter of the training examples; tort subset +3.0 [-2.0, 8.0]
+- Legal-BERT minus TF-IDF: +21.2 [19.4, 23.0]
+- TF-IDF minus random: +35.2 [33.1, 37.3]
+
+LoRA training loss fell from 0.43 (first 1,000 examples) to 0.33 (running mean over 5,000).
+First run failed on a tokenizer truncation error (a holding longer than 256 tokens with `only_first`); fixed with `longest_first`.
