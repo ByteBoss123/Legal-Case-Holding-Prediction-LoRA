@@ -1,0 +1,13 @@
+name: trunc-check
+on: { push: { branches: [trunc-check] } }
+permissions: { contents: write }
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install -q "transformers<5" datasets
+      - run: python experiments/truncation_check.py | tee experiments/truncation_result.txt
+      - run: |
+          git config user.name ci; git config user.email ci@users.noreply.github.com
+          git add experiments/truncation_result.txt; git commit -m "truncation result [skip ci]"; git push
